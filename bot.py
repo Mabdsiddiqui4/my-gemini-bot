@@ -5,6 +5,8 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from google import genai
 from google.genai import types
 #---------
+import asyncio
+#---------
 import http.server
 import threading
 # دالة لتشغيل سيرفر وهمي لإرضاء منصة Render المجانية
@@ -69,7 +71,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(bot_reply)
 
 def main():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
+    # بناء وتأمين اتصال بوت التيليجرام   
     app = Application.builder().token(TELEGRAM_TOKEN).build()
+    
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler((filters.TEXT | filters.PHOTO) & ~filters.COMMAND, handle_message))
     
